@@ -8,6 +8,15 @@ open_ports = []
 
 
 def portscan(port):
+    """
+    Verifica se a porta especificada está aberta no alvo.
+
+    Parameters:
+    port (int): O número da porta a ser verificada.
+
+    Returns:
+    bool: True se a porta estiver aberta, False caso contrário.
+    """
     try:
         sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         sock.connect((target, port))
@@ -17,6 +26,15 @@ def portscan(port):
 
 
 def get_ports(mode):
+    """
+    Insere as portas a serem verificadas na fila de tarefas.
+
+    Parameters:
+    mode (int): O modo de verificação escolhido pelo usuário.
+
+    Returns:
+    None
+    """
     if mode == 1:
         for port in range(1, 1024):
             queue.put(port)
@@ -36,6 +54,15 @@ def get_ports(mode):
 
 
 def worker():
+    """
+    Executa a verificação de portas em uma thread.
+
+    Parameters:
+    None
+
+    Returns:
+    None
+    """
     while not queue.empty():
         port = queue.get()
         if portscan(port):
@@ -44,7 +71,16 @@ def worker():
 
 
 def run_scanner(threads, mode):
+    """
+    Executa o scanner de portas.
 
+    Parameters:
+    threads (int): O número de threads a serem utilizadas no processo de verificação de portas.
+    mode (int): O modo de verificação escolhido pelo usuário.
+
+    Returns:
+    None
+    """
     get_ports(mode)
 
     thread_list = []
@@ -61,5 +97,3 @@ def run_scanner(threads, mode):
 
     print("Open ports are:", open_ports)
 
-
-run_scanner(100, 1)
